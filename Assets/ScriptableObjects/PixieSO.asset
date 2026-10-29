@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PixieSO
   m_EditorClassIdentifier: Assembly-CSharp::PixieSO
   maxHealth: 100
-  baseMoveSpeed: 5
+  baseMoveSpeed: 3
   baseRotationSpeed: 15
   damage: 10
   attackCooldown: 2
@@ -22,9 +22,9 @@ MonoBehaviour:
   circlingRadius: 4
   circlingSpeedMultiplier: 1.2
   separationRadius: 1.5
-  warningDuration: 0.5
-  dashSpeedMultiplier: 2.5
-  fleeDistance: 5
+  warningDuration: 2
+  dashSpeedMultiplier: 1.3
+  fleeDistance: 2
   fleeDuration: 1.5
   attackRotationSpeed: 10
   corpseDarkenDuration: 1
