@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 614a9c04d9874ac1bb0d63c4b6ba395f
+timeCreated: 1789636376
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269741
+  packageName: Saints Field
+  packageVersion: 5.30.11
+  assetPath: Packages/today.comes.saintsfield/Runtime/OnInspectorDisposeAttribute.cs
+  uploadId: 1028848

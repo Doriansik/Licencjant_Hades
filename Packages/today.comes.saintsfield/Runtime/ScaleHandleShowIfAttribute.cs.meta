@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 21b83f4fc21a71d42a9bad44ad395f65
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269741
+  packageName: Saints Field
+  packageVersion: 5.30.11
+  assetPath: Packages/today.comes.saintsfield/Runtime/ScaleHandleShowIfAttribute.cs
+  uploadId: 1028848

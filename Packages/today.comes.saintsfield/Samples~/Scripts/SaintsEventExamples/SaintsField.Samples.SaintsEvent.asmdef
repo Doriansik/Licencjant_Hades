@@ -1,0 +1,25 @@
+{
+    "name": "SaintsField.Samples.SaintsEvent",
+    "rootNamespace": "SaintsField",
+    "references": [
+        "SaintsField.Runtime.Events",
+        "SaintsField.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "SAINTSFIELD_SERIALIZATION"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.serialization",
+            "expression": "",
+            "define": "SAINTSFIELD_SERIALIZATION"
+        }
+    ],
+    "noEngineReferences": false
+}

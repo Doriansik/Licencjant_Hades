@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: df3d3dad8c0445aca6353cb207fb38f7
+timeCreated: 1787832000
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269741
+  packageName: Saints Field
+  packageVersion: 5.30.11
+  assetPath: Packages/today.comes.saintsfield/Runtime/Events/CachedInvoker.cs
+  uploadId: 1028848

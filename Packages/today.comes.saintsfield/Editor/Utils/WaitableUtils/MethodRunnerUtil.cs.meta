@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: ed1c5c6e35364aff8c986f6c67a15ab4
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269741
+  packageName: Saints Field
+  packageVersion: 5.30.11
+  assetPath: Packages/today.comes.saintsfield/Editor/Utils/WaitableUtils/MethodRunnerUtil.cs
+  uploadId: 1028848

@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 2e18cd1bb515458ab22091dbbc22520b
+timeCreated: 1789636672
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269741
+  packageName: Saints Field
+  packageVersion: 5.30.11
+  assetPath: Packages/today.comes.saintsfield/Editor/Playa/Renderer/OnInspectorInitAttributeRenderer/OnInspectorInitRenderer.cs
+  uploadId: 1028848

@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 983e9dd23c0a4dd99ed51c674fe7c3c3
+timeCreated: 1787723512
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269741
+  packageName: Saints Field
+  packageVersion: 5.30.11
+  assetPath: Packages/today.comes.saintsfield/Editor/Playa/Renderer/DecoratorRenderer/DecoratorDrawerRendererIMGUI.cs
+  uploadId: 1028848

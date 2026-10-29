@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 01de29b28ed5ca6448ee0c6cbd112e81
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269741
+  packageName: Saints Field
+  packageVersion: 5.30.11
+  assetPath: Packages/today.comes.saintsfield/Runtime/SaintsArrowHideIfAttribute.cs
+  uploadId: 1028848

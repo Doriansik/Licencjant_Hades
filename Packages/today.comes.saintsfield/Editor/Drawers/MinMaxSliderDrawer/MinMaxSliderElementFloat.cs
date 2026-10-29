@@ -1,0 +1,403 @@
+#if UNITY_2021_3_OR_NEWER
+using System;
+using SaintsField.Editor.Drawers.PropRangeDrawer;
+using SaintsField.Editor.Drawers.AdaptDrawer;
+using SaintsField.Editor.Drawers.UnitDrawer;
+using SaintsField.Editor.Utils;
+using UnityEngine;
+using UnityEngine.UIElements;
+
+namespace SaintsField.Editor.Drawers.MinMaxSliderDrawer
+{
+#if UNITY_6000_0_OR_NEWER
+    [UxmlElement]
+#endif
+    public partial class MinMaxSliderElementFloat: BindableElement, INotifyValueChanged<Vector2>
+    {
+#if !UNITY_6000_0_OR_NEWER
+        public new class UxmlTraits : VisualElement.UxmlTraits { }
+        public new class UxmlFactory : UxmlFactory<MinMaxSliderElementFloat, UxmlTraits> { }
+#endif
+
+        private Vector2 _cachedValue;
+
+        private readonly FloatField _minIntegerField;
+        private readonly MinMaxSlider _minMaxSlider;
+        private readonly FloatField _maxIntegerField;
+
+        private readonly AdaptAttribute _unitAttribute;
+
+        private static VisualTreeAsset _template;
+
+        // ReSharper disable once MemberCanBePrivate.Global
+        public MinMaxSliderElementFloat(): this(null){}
+
+        public MinMaxSliderElementFloat(AdaptAttribute unitAttribute)
+        {
+            _template ??= Util.LoadResource<VisualTreeAsset>("UIToolkit/MinMax/MinMaxSliderWithFloat.uxml");
+            TemplateContainer root = _template.CloneTree();
+            hierarchy.Add(root);
+
+            _unitAttribute = unitAttribute;
+            UnitAttributeDrawer.AddDisplayUnitChangedListener(_unitAttribute, RefreshDisplay);
+
+            _minIntegerField = root.Q<FloatField>("minInput");
+            _minMaxSlider = root.Q<MinMaxSlider>("minMaxSlider");
+            _maxIntegerField = root.Q<FloatField>("maxInput");
+
+            _minMaxSlider.RegisterValueChangedCallback(evt =>
+            {
+                evt.StopPropagation();
+
+                if (!_init)
+                {
+                    return;
+                }
+
+                Vector2 newValue = RemapValue(new Vector2(
+                    SliderToActualValue(evt.newValue.x),
+                    SliderToActualValue(evt.newValue.y)));
+                if (VectorClose(newValue, value))
+                {
+                    SetSliderValueWithoutNotify(newValue);
+                    SetFloatFieldWithoutNotify(_minIntegerField, newValue.x);
+                    SetFloatFieldWithoutNotify(_maxIntegerField, newValue.y);
+                }
+                else
+                {
+                    value = newValue;
+                }
+            });
+            _minIntegerField.RegisterValueChangedCallback(evt =>
+            {
+                if (!_init)
+                {
+                    return;
+                }
+
+                (string error, float actualValue) = PropRangeAttributeDrawer.GetPostValue(evt.newValue, _unitAttribute);
+                if (error != "")
+                {
+                    Debug.LogError(error);
+                    return;
+                }
+
+                (string otherError, float otherActualValue) =
+                    PropRangeAttributeDrawer.GetPostValue(_maxIntegerField.value, _unitAttribute);
+                if (otherError != "")
+                {
+                    Debug.LogError(otherError);
+                    return;
+                }
+
+                Vector2 newValue = RemapValue(new Vector2(actualValue, otherActualValue));
+                if (VectorClose(newValue, value))
+                {
+                    SetSliderValueWithoutNotify(newValue);
+                    SetFloatFieldWithoutNotify(_minIntegerField, newValue.x);
+                    SetFloatFieldWithoutNotify(_maxIntegerField, newValue.y);
+                }
+                else
+                {
+                    value = newValue;
+                }
+            });
+            _maxIntegerField.RegisterValueChangedCallback(evt =>
+            {
+                if (!_init)
+                {
+                    return;
+                }
+
+                (string error, float actualValue) = PropRangeAttributeDrawer.GetPostValue(evt.newValue, _unitAttribute);
+                if (error != "")
+                {
+                    Debug.LogError(error);
+                    return;
+                }
+
+                (string otherError, float otherActualValue) =
+                    PropRangeAttributeDrawer.GetPostValue(_minIntegerField.value, _unitAttribute);
+                if (otherError != "")
+                {
+                    Debug.LogError(otherError);
+                    return;
+                }
+
+                Vector2 newValue = RemapValue(new Vector2(otherActualValue, actualValue));
+                if (newValue == value)
+                {
+                    SetSliderValueWithoutNotify(newValue);
+                    SetFloatFieldWithoutNotify(_minIntegerField, newValue.x);
+                    SetFloatFieldWithoutNotify(_maxIntegerField, newValue.y);
+                }
+                else
+                {
+                    value = newValue;
+                }
+            });
+        }
+
+        private void SetFloatFieldWithoutNotify(FloatField floatField, float newValue)
+        {
+            float preValue = PropRangeAttributeDrawer.GetPreValue(newValue, _unitAttribute).value;
+            floatField.SetValueWithoutNotify(preValue);
+        }
+
+        private const float SqrEpsilon = float.Epsilon * float.Epsilon;
+
+        private static bool VectorClose(Vector2 a, Vector2 b)
+        {
+            return (a - b).sqrMagnitude <= SqrEpsilon;
+        }
+
+        private bool _init;
+        private float _step;
+        private float _minValue;
+        private float _maxValue;
+        public void SetConfig(object min, object max, float step)
+        {
+            (bool minOk, float minResult) = GetNumber(min);
+            if (!minOk)
+            {
+                return;
+            }
+            (bool maxOk, float maxResult) = GetNumber(max);
+            if (!maxOk)
+            {
+                return;
+            }
+
+            if (minResult > maxResult)
+            {
+                SetHelpBox($"min {minResult} should not be greater than max {maxResult}");
+                return;
+            }
+
+            bool changed = false;
+
+            if(!_init || Math.Abs(minResult - _minValue) > float.Epsilon)
+            {
+                _minValue = minResult;
+                changed = true;
+            }
+
+            if(!_init || Math.Abs(_maxValue - maxResult) > float.Epsilon)
+            {
+                _maxValue = maxResult;
+                changed = true;
+            }
+
+            if(!_init || Math.Abs(_step - step) > float.Epsilon)
+            {
+                _step = step;
+                changed = true;
+            }
+
+            _init = true;
+
+            // Debug.Log("Config OK");
+
+            if(changed)
+            {
+                RefreshDisplay();
+            }
+        }
+
+        private (bool ok, float result) GetNumber(object num)
+        {
+            switch (num)
+            {
+                case int i:
+                    return (true, i);
+                case byte b:
+                    return (true, b);
+                case char c:
+                    return (true, c);
+                case short s:
+                    return (true, s);
+                case ushort uShort:
+                    return (true, uShort);
+                case uint uInt:
+                    return (true, (int)uInt);
+                case long l:
+                    return (true, (int)l);
+                case ulong ul:
+                    return (true, (int)ul);
+                case float f:
+                    return (true, f);
+                case double d:
+                {
+                    if (d > float.MaxValue)
+                    {
+                        return (true, float.MaxValue);
+                    }
+
+                    if (d < float.MinValue)
+                    {
+                        return (true, float.MinValue);
+                    }
+
+                    return (true, (float)d);
+                }
+                default:
+                {
+                    try
+                    {
+                        return (true, Convert.ToInt32(num));
+                    }
+                    catch (Exception e)
+                    {
+                        SetHelpBox($"Target {num} is not a valid int number: {e.Message}");
+                        return (false, 0);
+                    }
+                }
+            }
+        }
+
+        private void RefreshDisplay()
+        {
+            if (!_init)
+            {
+                // Debug.Log("not init");
+                return;
+            }
+
+            Vector2 newValue = RemapValue(value);
+
+            _cachedValue = newValue;
+            SetSliderValueWithoutNotify(newValue);
+            SetFloatFieldWithoutNotify(_minIntegerField, newValue.x);
+            SetFloatFieldWithoutNotify(_maxIntegerField, newValue.y);
+            SetHelpBox("");
+        }
+
+        private Vector2 RemapValue(Vector2 newValue)
+        {
+            // Debug.Log($"will remap {newValue} with {_step}");
+            float x = Mathf.Clamp(newValue.x, _minValue, _maxValue);
+            float y = Mathf.Clamp(newValue.y, _minValue, _maxValue);
+
+            return _step > float.Epsilon
+                ? new Vector2(
+                    Util.BoundFloatStep(x, _minValue, _maxValue, _step),
+                    Util.BoundFloatStep(y, _minValue, _maxValue, _step))
+                : new Vector2(x, Mathf.Clamp(y, x, _maxValue));
+        }
+
+        private float SliderToActualValue(float sliderValue)
+        {
+            float normalized = Mathf.InverseLerp(_minMaxSlider.lowLimit, _minMaxSlider.highLimit, sliderValue);
+            return Mathf.Lerp(_minValue, _maxValue, normalized);
+        }
+
+        private float ActualToSliderValue(float actualValue)
+        {
+            float normalized = Mathf.InverseLerp(_minValue, _maxValue, actualValue);
+            return Mathf.Lerp(_minMaxSlider.lowLimit, _minMaxSlider.highLimit, normalized);
+        }
+
+        private void SetSliderValueWithoutNotify(Vector2 actualValue)
+        {
+            _minMaxSlider.SetValueWithoutNotify(new Vector2(
+                ActualToSliderValue(actualValue.x),
+                ActualToSliderValue(actualValue.y)));
+        }
+
+        private HelpBox _helpBox;
+
+        public void BindHelpBox(HelpBox helpBox)
+        {
+            _helpBox = helpBox;
+        }
+
+        private void SetHelpBox(string content)
+        {
+            if (_helpBox == null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(content))
+            {
+                if (_helpBox.style.display != DisplayStyle.None)
+                {
+                    _helpBox.style.display = DisplayStyle.None;
+                }
+
+                return;
+            }
+
+            if (_helpBox.text != content)
+            {
+                _helpBox.text = content;
+            }
+            if (_helpBox.style.display != DisplayStyle.Flex)
+            {
+                _helpBox.style.display = DisplayStyle.Flex;
+            }
+        }
+
+        public void SetValueWithoutNotify(Vector2 newValue)
+        {
+            _cachedValue = newValue;
+            RefreshDisplay();
+        }
+
+        public void SetShowMixedValue(bool show)
+        {
+            _minIntegerField.showMixedValue = show;
+            _minMaxSlider.showMixedValue = show;
+            _maxIntegerField.showMixedValue = show;
+        }
+
+        public Vector2 value
+        {
+            get => _cachedValue;
+            set
+            {
+                if (_cachedValue == value)
+                {
+                    return;
+                }
+
+                Vector2 previous = this.value;
+                SetValueWithoutNotify(value);
+
+                using ChangeEvent<Vector2> evt = ChangeEvent<Vector2>.GetPooled(previous, value);
+                evt.target = this;
+                SendEvent(evt);
+            }
+        }
+    }
+
+    public class MinMaxSliderFieldFloat : BaseField<Vector2>
+    {
+        public readonly MinMaxSliderElementFloat MinMaxSliderElementFloat;
+        private MinMaxSliderFieldFloat(string label, MinMaxSliderElementFloat visualInput): base(label, visualInput)
+        {
+            MinMaxSliderElementFloat = visualInput;
+            visualInput.RegisterValueChangedCallback(evt =>
+            {
+                evt.StopPropagation();
+                value = evt.newValue;
+            });
+        }
+        public MinMaxSliderFieldFloat(string label, AdaptAttribute unitAttribute): this(label, new MinMaxSliderElementFloat(unitAttribute))
+        {
+        }
+
+        public override void SetValueWithoutNotify(Vector2 newValue)
+        {
+            base.SetValueWithoutNotify(newValue);
+            MinMaxSliderElementFloat.SetValueWithoutNotify(newValue);
+        }
+
+        protected override void UpdateMixedValueContent()
+        {
+            MinMaxSliderElementFloat.SetShowMixedValue(showMixedValue);
+        }
+
+    }
+}
+#endif

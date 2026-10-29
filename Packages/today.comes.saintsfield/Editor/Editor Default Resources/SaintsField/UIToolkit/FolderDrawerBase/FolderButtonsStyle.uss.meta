@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: cddf6a5cf2538e0408d8554e1bb6b60a
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 12385, guid: 0000000000000000e000000000000000, type: 0}
+  disableValidation: 0
+  unsupportedSelectorAction: 0
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269741
+  packageName: Saints Field
+  packageVersion: 5.30.11
+  assetPath: Packages/today.comes.saintsfield/Editor/Editor Default Resources/SaintsField/UIToolkit/FolderDrawerBase/FolderButtonsStyle.uss
+  uploadId: 1028848

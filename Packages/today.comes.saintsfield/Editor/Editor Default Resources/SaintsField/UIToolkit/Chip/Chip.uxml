@@ -1,0 +1,8 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/today.comes.saintsfield/Editor/Editor%20Default%20Resources/SaintsField/UIToolkit/Chip/ChipStyle.uss?fileID=7433441132597879392&amp;guid=0f1891761cb679a4bbfd3036c91e010c&amp;type=3#ChipStyle"/>
+    <engine:VisualElement name="chip-root" focusable="true" class="chipRoot">
+        <engine:Button name="chip-button-1" class="chipButton chip-button-reset"/>
+        <engine:Label text="Label" name="chip-label" class="chipLabel"/>
+        <engine:Button name="chip-button-2" class="chip-button-close chipButton"/>
+    </engine:VisualElement>
+</engine:UXML>

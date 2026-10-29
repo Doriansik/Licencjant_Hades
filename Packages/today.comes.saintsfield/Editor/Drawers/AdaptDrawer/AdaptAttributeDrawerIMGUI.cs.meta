@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 503a52bffdef62e499cdf42ba9049227
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269741
+  packageName: Saints Field
+  packageVersion: 5.30.11
+  assetPath: Packages/today.comes.saintsfield/Editor/Drawers/AdaptDrawer/AdaptAttributeDrawerIMGUI.cs
+  uploadId: 1028848

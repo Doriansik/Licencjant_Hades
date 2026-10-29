@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 366ef0d5275ffc342b0fc05f4806cc5e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269741
+  packageName: Saints Field
+  packageVersion: 5.30.11
+  assetPath: Packages/today.comes.saintsfield/Samples~/Scripts/SaintsEditor/ToastExample.cs
+  uploadId: 1028848

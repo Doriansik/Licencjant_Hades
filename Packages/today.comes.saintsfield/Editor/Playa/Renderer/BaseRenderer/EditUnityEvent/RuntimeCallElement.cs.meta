@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 37d08c54b3534a43b38b5341ea09ff84
+timeCreated: 1790747125
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269741
+  packageName: Saints Field
+  packageVersion: 5.30.11
+  assetPath: Packages/today.comes.saintsfield/Editor/Playa/Renderer/BaseRenderer/EditUnityEvent/RuntimeCallElement.cs
+  uploadId: 1028848

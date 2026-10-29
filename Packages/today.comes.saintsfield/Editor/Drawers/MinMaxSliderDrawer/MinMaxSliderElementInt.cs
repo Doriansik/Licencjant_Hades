@@ -1,0 +1,405 @@
+#if UNITY_2021_3_OR_NEWER
+using System;
+using SaintsField.Editor.Drawers.PropRangeDrawer;
+using SaintsField.Editor.Drawers.AdaptDrawer;
+using SaintsField.Editor.Drawers.UnitDrawer;
+using SaintsField.Editor.Utils;
+using UnityEngine;
+using UnityEngine.UIElements;
+
+namespace SaintsField.Editor.Drawers.MinMaxSliderDrawer
+{
+#if UNITY_6000_0_OR_NEWER
+    [UxmlElement]
+#endif
+    public partial class MinMaxSliderElementInt: BindableElement, INotifyValueChanged<Vector2Int>
+    {
+#if !UNITY_6000_0_OR_NEWER
+        public new class UxmlTraits : VisualElement.UxmlTraits { }
+        public new class UxmlFactory : UxmlFactory<MinMaxSliderElementInt, UxmlTraits> { }
+#endif
+
+        private Vector2Int _cachedValue;
+
+        private readonly IntegerField _minIntegerField;
+        private readonly MinMaxSlider _minMaxSlider;
+        private readonly IntegerField _maxIntegerField;
+
+        private readonly AdaptAttribute _unitAttribute;
+
+        private static VisualTreeAsset _template;
+
+        // ReSharper disable once MemberCanBePrivate.Global
+        public MinMaxSliderElementInt(): this(null){}
+
+        public MinMaxSliderElementInt(AdaptAttribute unitAttribute)
+        {
+            _template ??= Util.LoadResource<VisualTreeAsset>("UIToolkit/MinMax/MinMaxSliderWithInt.uxml");
+            TemplateContainer root = _template.CloneTree();
+            hierarchy.Add(root);
+
+            _unitAttribute = unitAttribute;
+            UnitAttributeDrawer.AddDisplayUnitChangedListener(_unitAttribute, RefreshDisplay);
+
+            _minIntegerField = root.Q<IntegerField>("minInput");
+            _minMaxSlider = root.Q<MinMaxSlider>("minMaxSlider");
+            _maxIntegerField = root.Q<IntegerField>("maxInput");
+
+            _minMaxSlider.RegisterValueChangedCallback(evt =>
+            {
+                if (!_init)
+                {
+                    return;
+                }
+
+                Vector2Int newValue = RemapValue(new Vector2Int(
+                    SliderToActualValue(evt.newValue.x),
+                    SliderToActualValue(evt.newValue.y)));
+                if (newValue == value)
+                {
+                    SetSliderValueWithoutNotify(newValue);
+                    SetIntFieldWithoutNotify(_minIntegerField, newValue.x);
+                    SetIntFieldWithoutNotify(_maxIntegerField, newValue.y);
+                }
+                else
+                {
+                    value = newValue;
+                }
+            });
+            _minIntegerField.RegisterValueChangedCallback(evt =>
+            {
+                if (!_init)
+                {
+                    return;
+                }
+
+                (string error, int actualValue) = PropRangeAttributeDrawer.GetPostValue(evt.newValue, _unitAttribute);
+                if (error != "")
+                {
+                    Debug.LogError(error);
+                    return;
+                }
+
+                (string otherError, int otherActualValue) =
+                    PropRangeAttributeDrawer.GetPostValue(_maxIntegerField.value, _unitAttribute);
+                if (otherError != "")
+                {
+                    Debug.LogError(otherError);
+                    return;
+                }
+
+                Vector2Int newValue = RemapValue(new Vector2Int(actualValue, otherActualValue));
+                if (newValue == value)
+                {
+                    SetSliderValueWithoutNotify(newValue);
+                    SetIntFieldWithoutNotify(_minIntegerField, newValue.x);
+                    SetIntFieldWithoutNotify(_maxIntegerField, newValue.y);
+                }
+                else
+                {
+                    value = newValue;
+                }
+            });
+            _maxIntegerField.RegisterValueChangedCallback(evt =>
+            {
+                if (!_init)
+                {
+                    return;
+                }
+                (string error, int actualValue) = PropRangeAttributeDrawer.GetPostValue(evt.newValue, _unitAttribute);
+                if (error != "")
+                {
+                    Debug.LogError(error);
+                    return;
+                }
+
+                (string otherError, int otherActualValue) =
+                    PropRangeAttributeDrawer.GetPostValue(_minIntegerField.value, _unitAttribute);
+                if (otherError != "")
+                {
+                    Debug.LogError(otherError);
+                    return;
+                }
+
+                Vector2Int newValue = RemapValue(new Vector2Int(otherActualValue, actualValue));
+                if (newValue == value)
+                {
+                    SetSliderValueWithoutNotify(newValue);
+                    SetIntFieldWithoutNotify(_minIntegerField, newValue.x);
+                    SetIntFieldWithoutNotify(_maxIntegerField, newValue.y);
+                }
+                else
+                {
+                    value = newValue;
+                }
+            });
+        }
+
+        private void SetIntFieldWithoutNotify(IntegerField intField, int newValue)
+        {
+            int preValue = PropRangeAttributeDrawer.GetPreValue(newValue, _unitAttribute).value;
+            intField.SetValueWithoutNotify(preValue);
+        }
+
+        private bool _init;
+        private int _step;
+        private int _minValue;
+        private int _maxValue;
+        public void SetConfig(object min, object max, int step)
+        {
+            (bool minOk, int minResult) = GetNumber(min);
+            if (!minOk)
+            {
+                return;
+            }
+            (bool maxOk, int maxResult) = GetNumber(max);
+            if (!maxOk)
+            {
+                return;
+            }
+
+            if (minResult > maxResult)
+            {
+                SetHelpBox($"min {minResult} should not be greater than max {maxResult}");
+                return;
+            }
+
+            bool changed = false;
+
+            if(!_init || minResult != _minValue)
+            {
+                _minValue = minResult;
+                changed = true;
+            }
+
+            if(!_init || _maxValue != maxResult)
+            {
+                _maxValue = maxResult;
+                changed = true;
+            }
+
+            if(_step != step)
+            {
+                _step = step;
+                changed = true;
+            }
+
+            _init = true;
+
+            // Debug.Log("Config OK");
+
+            if(changed)
+            {
+                RefreshDisplay();
+            }
+        }
+
+        private (bool ok, int result) GetNumber(object num)
+        {
+            switch (num)
+            {
+                case int i:
+                    return (true, i);
+                case byte b:
+                    return (true, b);
+                case char c:
+                    return (true, c);
+                case short s:
+                    return (true, s);
+                case ushort uShort:
+                    return (true, uShort);
+                case uint uInt:
+                {
+                    if (uInt > int.MaxValue)
+                    {
+                        return (true, int.MaxValue);
+                    }
+
+                    return (true, (int)uInt);
+                }
+                case long l:
+                {
+                    // ReSharper disable once ConvertIfStatementToSwitchStatement
+                    if (l < int.MinValue)
+                    {
+                        return (true, int.MinValue);
+                    }
+
+                    if (l > int.MaxValue)
+                    {
+                        return (true, int.MaxValue);
+                    }
+
+                    return (true, (int)l);
+                }
+                case ulong ul:
+                {
+                    if (ul > int.MaxValue)
+                    {
+                        return (true, int.MaxValue);
+                    }
+
+                    return (true, (int)ul);
+                }
+                default:
+                {
+                    try
+                    {
+                        return (true, Convert.ToInt32(num));
+                    }
+                    catch (Exception e)
+                    {
+                        SetHelpBox($"Target {num} is not a valid int number: {e.Message}");
+                        return (false, 0);
+                    }
+                }
+            }
+        }
+
+        private void RefreshDisplay()
+        {
+            if (!_init)
+            {
+                // Debug.Log("not init");
+                return;
+            }
+
+            Vector2Int newValue = RemapValue(value);
+
+            _cachedValue = newValue;
+            SetSliderValueWithoutNotify(newValue);
+            SetIntFieldWithoutNotify(_minIntegerField, newValue.x);
+            SetIntFieldWithoutNotify(_maxIntegerField, newValue.y);
+            SetHelpBox("");
+        }
+
+        private Vector2Int RemapValue(Vector2Int newValue)
+        {
+            // Debug.Log($"will remap {newValue} with {_step}");
+            int x = Mathf.Clamp(newValue.x, _minValue, _maxValue);
+            int y = Mathf.Clamp(newValue.y, _minValue, _maxValue);
+
+            return _step > 1
+                ? new Vector2Int(
+                    Util.BoundIntStep(x, _minValue, _maxValue, _step),
+                    Util.BoundIntStep(y, _minValue, _maxValue, _step))
+                : new Vector2Int(x, Mathf.Clamp(y, x, _maxValue));
+        }
+
+        private int SliderToActualValue(float sliderValue)
+        {
+            float normalized = Mathf.InverseLerp(_minMaxSlider.lowLimit, _minMaxSlider.highLimit, sliderValue);
+            return Mathf.RoundToInt(Mathf.Lerp(_minValue, _maxValue, normalized));
+        }
+
+        private float ActualToSliderValue(int actualValue)
+        {
+            float normalized = Mathf.InverseLerp(_minValue, _maxValue, actualValue);
+            return Mathf.Lerp(_minMaxSlider.lowLimit, _minMaxSlider.highLimit, normalized);
+        }
+
+        private void SetSliderValueWithoutNotify(Vector2Int actualValue)
+        {
+            _minMaxSlider.SetValueWithoutNotify(new Vector2(
+                ActualToSliderValue(actualValue.x),
+                ActualToSliderValue(actualValue.y)));
+        }
+
+        private HelpBox _helpBox;
+
+        public void BindHelpBox(HelpBox helpBox)
+        {
+            _helpBox = helpBox;
+        }
+
+        private void SetHelpBox(string content)
+        {
+            if (_helpBox == null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(content))
+            {
+                if (_helpBox.style.display != DisplayStyle.None)
+                {
+                    _helpBox.style.display = DisplayStyle.None;
+                }
+
+                return;
+            }
+
+            if (_helpBox.text != content)
+            {
+                _helpBox.text = content;
+            }
+            if (_helpBox.style.display != DisplayStyle.Flex)
+            {
+                _helpBox.style.display = DisplayStyle.Flex;
+            }
+        }
+
+        public void SetValueWithoutNotify(Vector2Int newValue)
+        {
+            _cachedValue = newValue;
+            RefreshDisplay();
+        }
+
+        public void SetShowMixedValue(bool showMixedValue)
+        {
+            _minIntegerField.showMixedValue = showMixedValue;
+            _minMaxSlider.showMixedValue = showMixedValue;
+            _maxIntegerField.showMixedValue = showMixedValue;
+        }
+
+        public Vector2Int value
+        {
+            get => _cachedValue;
+            set
+            {
+                if (_cachedValue == value)
+                {
+                    return;
+                }
+
+                Vector2Int previous = this.value;
+                SetValueWithoutNotify(value);
+
+                using ChangeEvent<Vector2Int> evt = ChangeEvent<Vector2Int>.GetPooled(previous, value);
+                evt.target = this;
+                SendEvent(evt);
+            }
+        }
+    }
+
+    public class MinMaxSliderFieldInt : BaseField<Vector2Int>
+    {
+        public readonly MinMaxSliderElementInt MinMaxSliderElementInt;
+        private MinMaxSliderFieldInt(string label, MinMaxSliderElementInt visualInput): base(label, visualInput)
+        {
+            MinMaxSliderElementInt = visualInput;
+            visualInput.RegisterValueChangedCallback(evt =>
+            {
+                evt.StopPropagation();
+                value = evt.newValue;
+            });
+        }
+
+        public MinMaxSliderFieldInt(string label, AdaptAttribute unitAttribute) : this(label, new MinMaxSliderElementInt(unitAttribute))
+        {
+        }
+
+        public override void SetValueWithoutNotify(Vector2Int newValue)
+        {
+            base.SetValueWithoutNotify(newValue);
+            MinMaxSliderElementInt.SetValueWithoutNotify(newValue);
+        }
+
+        protected override void UpdateMixedValueContent()
+        {
+            MinMaxSliderElementInt.SetShowMixedValue(showMixedValue);
+        }
+
+    }
+}
+#endif
