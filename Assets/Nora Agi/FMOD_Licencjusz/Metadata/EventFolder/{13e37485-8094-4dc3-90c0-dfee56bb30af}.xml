@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="EventFolder" id="{13e37485-8094-4dc3-90c0-dfee56bb30af}">
+		<property name="name">
+			<value>Mawka</value>
+		</property>
+		<relationship name="folder">
+			<destination>{a44be87f-bc31-4320-b483-b4f344fefda6}</destination>
+		</relationship>
+	</object>
+</objects>

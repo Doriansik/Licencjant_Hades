@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="EventFolder" id="{e58e85df-754c-4739-9edc-815718dd3b80}">
+		<property name="name">
+			<value>Tarot Reader</value>
+		</property>
+		<relationship name="folder">
+			<destination>{a44be87f-bc31-4320-b483-b4f344fefda6}</destination>
+		</relationship>
+	</object>
+</objects>
