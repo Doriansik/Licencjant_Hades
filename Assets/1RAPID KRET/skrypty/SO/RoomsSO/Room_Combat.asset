@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5644c1b73012c124eaf7b1f90a391365, type: 3}
+  m_Name: Room_Combat
+  m_EditorClassIdentifier: Assembly-CSharp::RoomDataSOKret
+  roomType: 2
+  roomPrefabs:
+  - {fileID: 5460005185952852884, guid: 595868ef5c1f4f1408aa1aa087abe92e, type: 3}
+  - {fileID: 5460005185952852884, guid: e55e1171587f34949a301cc8c0c50e45, type: 3}
+  - {fileID: 5460005185952852884, guid: e55e1171587f34949a301cc8c0c50e45, type: 3}
+  - {fileID: 5460005185952852884, guid: e55e1171587f34949a301cc8c0c50e45, type: 3}
+  - {fileID: 5460005185952852884, guid: e55e1171587f34949a301cc8c0c50e45, type: 3}
+  - {fileID: 5460005185952852884, guid: e55e1171587f34949a301cc8c0c50e45, type: 3}

@@ -107,3 +107,15 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+Assets/TextMesh Pro/Fonts.meta
+
+Assets/TextMesh Pro/Resources.meta
+
+Assets/TextMesh Pro/Resources/Fonts & Materials.meta
+
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset
+
+Assets/TextMesh Pro/Shaders.meta
