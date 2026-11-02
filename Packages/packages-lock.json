@@ -1,16 +1,22 @@
 {
   "dependencies": {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "com.kyrylokuzyk.primetween": {
       "version": "file:../Packages/com.kyrylokuzyk.primetween.tgz",
       "depth": 0,
       "source": "local-tarball",
 =======
+=======
+>>>>>>> origin/Dorians
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
       "source": "builtin",
+<<<<<<< HEAD
 >>>>>>> ea396c0 (Dzwieki Licho, tlo i plansza test)
+=======
+>>>>>>> origin/Dorians
       "dependencies": {}
     },
     "com.unity.ai.navigation": {

@@ -1,10 +1,14 @@
 {
   "dependencies": {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "com.kyrylokuzyk.primetween": "file:../Packages/com.kyrylokuzyk.primetween.tgz",
 =======
     "com.unity.2d.sprite": "1.0.0",
 >>>>>>> ea396c0 (Dzwieki Licho, tlo i plansza test)
+=======
+    "com.unity.2d.sprite": "1.0.0",
+>>>>>>> origin/Dorians
     "com.unity.ai.navigation": "2.0.14",
     "com.unity.cinemachine": "3.1.7",
     "com.unity.collab-proxy": "2.12.4",
