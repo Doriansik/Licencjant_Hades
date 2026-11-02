@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0e59ec11c54b8d4c88c220780c7dfb3, type: 3}
+  m_Name: PixieSO
+  m_EditorClassIdentifier: Assembly-CSharp::PixieSO
+  maxHealth: 100
+  baseMoveSpeed: 5
+  baseRotationSpeed: 15
+  damage: 10
+  attackCooldown: 2
+  aggroDistance: 6
+  attackDistance: 1.5
+  circlingRadius: 4
+  circlingSpeedMultiplier: 1.2
+  separationRadius: 1.5
+  warningDuration: 0.5
+  dashSpeedMultiplier: 2.5
+  fleeDistance: 5
+  fleeDuration: 1.5
+  attackRotationSpeed: 10
+  corpseDarkenDuration: 1
+  corpseDecayTime: 2
